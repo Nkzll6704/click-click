@@ -25,75 +25,54 @@
             border-radius: 10px;
             cursor: pointer;
         }
-        .button.pressed {
-            background-color: #ffffff;
-            color: #000000;
-        }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>Click&Click</h1>
-        <span class="counter" id="globalClickCount">0</span>
+        <span class="counter" id="clickCount">0</span>
         <button id="myButton" class="button">Click</button>
     </div>
 
     <script>
-        // Sayacı tutmak için yerel depolamayı kontrol edin
-        let clickCount = localStorage.getItem('clickCount');
-        if (clickCount === null) {
-            clickCount = 0;
-        }
-
-        // Sayacı güncelle
-        document.getElementById("globalClickCount").textContent = clickCount;
-
         // Düğmeye tıklama olayını dinleyin
         const button = document.getElementById("myButton");
-        let isButtonPressed = false;
-        button.addEventListener("mousedown", function() {
-            isButtonPressed = true;
-            button.classList.add("pressed");
-        });
-        button.addEventListener("mouseup", function() {
-            isButtonPressed = false;
-            button.classList.remove("pressed");
-        });
         button.addEventListener("click", function() {
-            // Sayacı artırın
-            clickCount++;
-            // Sayacı yerel depolamaya kaydet
-            localStorage.setItem('clickCount', clickCount);
-            // Sayacı güncelle
-            document.getElementById("globalClickCount").textContent = clickCount;
-
             // Sayacınızı sunucuya gönderin
-            fetch('/api/globalClickCount', {
+            fetch('/api/clickCount', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ clickCount })
+                body: JSON.stringify({ increment: 1 })
             })
             .then(response => response.json())
             .then(data => {
                 // Sayacı güncelle
-                document.getElementById("globalClickCount").textContent = data.clickCount;
+                document.getElementById("clickCount").textContent = data.clickCount;
+                // Diğer istemcilere güncelleme sinyali gönderin
+                localStorage.setItem('clickCount', data.clickCount);
             })
             .catch(error => {
                 console.error('Sayacı güncelleme hatası:', error);
             });
         });
 
-        // Sayfa yüklendiğinde sayacınızı güncelle
-        updateGlobalClickCount();
+        // Sayfa yüklendiğinde ve her depolama değişikliğinde sayacınızı güncelle
+        updateClickCount();
+        window.addEventListener('storage', function(event) {
+            if (event.key === 'clickCount') {
+                document.getElementById("clickCount").textContent = event.newValue;
+                updateClickCount();
+            }
+        });
 
-        function updateGlobalClickCount() {
-            fetch('/api/globalClickCount')
+        function updateClickCount() {
+            fetch('/api/clickCount')
                 .then(response => response.json())
                 .then(data => {
                     // Sayacı güncelle
-                    document.getElementById("globalClickCount").textContent = data.clickCount;
+                    document.getElementById("clickCount").textContent = data.clickCount;
                 })
                 .catch(error => {
                     console.error('Sayacı güncelleme hatası:', error);
@@ -102,7 +81,7 @@
 
         // Sayfa yenilendiğinde sayacınızı yükle
         window.addEventListener('load', function() {
-            updateGlobalClickCount();
+            updateClickCount();
         });
     </script>
 </body>
