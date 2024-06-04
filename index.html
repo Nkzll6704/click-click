@@ -63,7 +63,7 @@
             updateClickCount();
         });
 
-       // Düğmeye tıklama olayını dinleyin
+  // Düğmeye tıklama olayını dinleyin
 const button = document.getElementById('myButton');
 button.addEventListener('click', function() {
     // Sunucuya tıklama olayını gönder
@@ -72,6 +72,22 @@ button.addEventListener('click', function() {
             if (!response.ok) {
                 throw new Error('Sunucu hatası: ' + response.statusText);
             }
+            // Sunucudan sayaç değerini güncelle
+            response.json().then(data => {
+                // Sunucudan gelen veriyi konsola yazdır
+                console.log('Sunucudan gelen veri:', data);
+                // Sayacı güncelle
+                document.getElementById('clickCount').textContent = data.clickCount;
+            });
+        })
+        .catch(error => {
+            // Hata durumlarında konsola yazdır
+            console.error('Hata:', error);
+        });
+});
+
+});
+
             // Sunucudan sayaç değerini güncelle
             return response.json();
         })
