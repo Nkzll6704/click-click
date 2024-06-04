@@ -35,8 +35,11 @@
     </div>
 
     <script>
-        // Global değişken olarak sayacı tutun
-        let clickCount = 0;
+        // Sayacı tutmak için yerel depolamayı kontrol edin
+        let clickCount = localStorage.getItem('clickCount');
+        if (clickCount === null) {
+            clickCount = 0;
+        }
 
         // Sayacı güncelle
         document.getElementById("clickCount").textContent = clickCount;
@@ -46,6 +49,8 @@
         button.addEventListener("click", function() {
             // Sayacı artırın
             clickCount++;
+            // Sayacı yerel depolamaya kaydet
+            localStorage.setItem('clickCount', clickCount);
             // Sayacı güncelle
             document.getElementById("clickCount").textContent = clickCount;
 
@@ -81,6 +86,18 @@
                     console.error('Sayacı güncelleme hatası:', error);
                 });
         }
+
+        // Sayfa yenilendiğinde sayacınızı yükle
+        window.addEventListener('load', function() {
+            updateClickCount();
+        });
+
+        // Sayacınızı herkese aynı görünmesini sağlayın
+        window.addEventListener('storage', function(event) {
+            if (event.key === 'clickCount') {
+                document.getElementById("clickCount").textContent = event.newValue;
+            }
+        });
     </script>
 </body>
 </html>
