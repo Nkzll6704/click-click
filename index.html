@@ -35,10 +35,36 @@
     </div>
 
     <script>
+        // Sayacı yerel depolamadan veya sunucudan al ve güncelle
+        function updateClickCount() {
+            fetch('/api/clickCount')
+                .then(response => response.json())
+                .then(data => {
+                    // Sayacı güncelle
+                    localStorage.setItem('clickCount', data.clickCount);
+                    document.getElementById("clickCount").textContent = data.clickCount;
+                })
+                .catch(error => {
+                    console.error('Sayacı güncelleme hatası:', error);
+                });
+        }
+
+        // Sayfa yüklendiğinde sayaç değerini sunucudan al
+        window.addEventListener('load', function() {
+            updateClickCount();
+        });
+
+        // Yerel depolama değiştiğinde sayaç değerini güncelle
+        window.addEventListener('storage', function(event) {
+            if (event.key === 'clickCount') {
+                document.getElementById("clickCount").textContent = event.newValue;
+            }
+        });
+
         // Düğmeye tıklama olayını dinleyin
         const button = document.getElementById("myButton");
         button.addEventListener("click", function() {
-            // Sayacınızı sunucuya gönderin
+            // Sayacınızı sunucuya gönderin ve güncel değeri alın
             fetch('/api/clickCount', {
                 method: 'POST',
                 headers: {
@@ -48,38 +74,13 @@
             })
             .then(response => response.json())
             .then(data => {
-                // Sayacı güncelle
-                document.getElementById("clickCount").textContent = data.clickCount;
-                // Diğer istemcilere güncelleme sinyali gönderin
+                // Sunucudan gelen değeri güncelle
                 localStorage.setItem('clickCount', data.clickCount);
+                document.getElementById("clickCount").textContent = data.clickCount;
             })
             .catch(error => {
                 console.error('Sayacı güncelleme hatası:', error);
             });
-        });
-
-        // Sayfa yüklendiğinde ve her depolama değişikliğinde sayacınızı güncelle
-        function updateClickCount() {
-            fetch('/api/clickCount')
-                .then(response => response.json())
-                .then(data => {
-                    // Sayacı güncelle
-                    document.getElementById("clickCount").textContent = data.clickCount;
-                })
-                .catch(error => {
-                    console.error('Sayacı güncelleme hatası:', error);
-                });
-        }
-
-        window.addEventListener('load', function() {
-            updateClickCount();
-        });
-
-        window.addEventListener('storage', function(event) {
-            if (event.key === 'clickCount') {
-                document.getElementById("clickCount").textContent = event.newValue;
-                updateClickCount();
-            }
         });
     </script>
 </body>
