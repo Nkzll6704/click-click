@@ -86,6 +86,21 @@ button.addEventListener('click', function() {
             console.error('Hata:', error);
         });
 });
+
+            // Sunucudan sayaç değerini güncelle
+            return response.json();
+        })
+        .then(data => {
+            // Sunucudan gelen veriyi konsola yazdır
+            console.log('Sunucudan gelen veri:', data);
+            // Sayacı güncelle
+            document.getElementById('clickCount').textContent = data.clickCount;
+        })
+        .catch(error => {
+            // Hata durumlarında konsola yazdır
+            console.error('Hata:', error);
+        });
+});
                     // Sunucudan sayaç değerini güncelle
                     return response.json();
                 })
