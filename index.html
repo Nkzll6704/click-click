@@ -43,22 +43,47 @@
         button.addEventListener("click", function() {
             // Sayacı artırın
             globalClickCount++;
-            // Sayacı güncelleyin
-            document.getElementById("globalClickCount").textContent = globalClickCount;
-            // Sayacı yerel depolama'ya kaydet
+            // Sayacı yerel depolamaya kaydet
             localStorage.setItem('globalClickCount', globalClickCount);
+            // Sayacı tüm tarayıcı pencerelerinde güncelle
+            updateGlobalClickCount();
         });
 
         // Sayfa yüklendiğinde sayacıyı güncelle
         document.addEventListener("DOMContentLoaded", function() {
             document.getElementById("globalClickCount").textContent = globalClickCount;
+            // Sayacı tüm tarayıcı pencerelerinde güncelle
+            updateGlobalClickCount();
         });
 
         // Sayfa kapatıldığında sayacı yerel depolamadan alın
         window.addEventListener("beforeunload", function() {
             globalClickCount = parseInt(localStorage.getItem('globalClickCount')) || 0;
             document.getElementById("globalClickCount").textContent = globalClickCount;
+            // Sayacı tüm tarayıcı pencerelerinde güncelle
+            updateGlobalClickCount();
         });
+
+        // Sayacı tüm tarayıcı pencerelerinde güncelle
+        function updateGlobalClickCount() {
+            fetch('update_click_count.php', {
+                method: 'POST',
+                body: JSON.stringify({ clickCount: globalClickCount }),
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Sayacı güncelleme işlemi başarılı olduysa yerel depolamada güncelle
+                if (data.success) {
+                    localStorage.setItem('globalClickCount', globalClickCount);
+                }
+            })
+            .catch(error => {
+                console.error('Sayacı güncelleme hatası:', error);
+            });
+        }
     </script>
 </body>
 </html>
