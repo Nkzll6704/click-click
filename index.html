@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Clicknclick | Clicker Counter</title>
+    <style>
+        body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            text-align: center;
+        }
+        .counter {
+            font-size: 29px;
+            margin-right: 15px;
+        }
+        .button {
+            padding: 20px 40px;
+            background-color: #000000;
+            color: #ffffff;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Click&Click</h1>
+        <span class="counter" id="clickCount">0</span>
+        <button id="myButton" class="button">Tıkla</button>
+    </div>
+
+    <script>
+        // Sayacı tutmak için bir değişken oluşturun
+        let clickCount = sessionStorage.getItem('clickCount') || 0;
+
+        // Düğmeye tıklama olayını dinleyin
+        const button = document.getElementById("myButton");
+        button.addEventListener("click", function() {
+            // Sayacı artırın
+            clickCount++;
+            // Sayacı güncelleyin
+            document.getElementById("clickCount").textContent = clickCount;
+            // Sayacı oturum depolama'ya kaydet
+            sessionStorage.setItem('clickCount', clickCount);
+        });
+
+        // Sayfa yüklendiğinde sayacıyı güncelle
+        document.addEventListener("DOMContentLoaded", function() {
+            document.getElementById("clickCount").textContent = clickCount;
+        });
+    </script>
+    </body>
+    </html>
