@@ -25,17 +25,9 @@
             border-radius: 10px;
             cursor: pointer;
         }
-        .icon-button {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 50px;
-            height: 50px;
-            background-color: #000000;
-            color: #ffffff;
-            border: none;
-            border-radius: 50%;
-            cursor: pointer;
+        .button.pressed {
+            background-color: #ffffff;
+            color: #000000;
         }
     </style>
 </head>
@@ -44,9 +36,6 @@
         <h1>Click&Click</h1>
         <span class="counter" id="globalClickCount">0</span>
         <button id="myButton" class="button">Click</button>
-        <button id="iconButton" class="icon-button">
-            <i class="fas fa-plus"></i>
-        </button>
     </div>
 
     <script>
@@ -61,6 +50,15 @@
 
         // Düğmeye tıklama olayını dinleyin
         const button = document.getElementById("myButton");
+        let isButtonPressed = false;
+        button.addEventListener("mousedown", function() {
+            isButtonPressed = true;
+            button.classList.add("pressed");
+        });
+        button.addEventListener("mouseup", function() {
+            isButtonPressed = false;
+            button.classList.remove("pressed");
+        });
         button.addEventListener("click", function() {
             // Sayacı artırın
             clickCount++;
@@ -81,34 +79,6 @@
             .then(data => {
                 // Sayacı güncelle
                 document.getElementById("globalClickCount").textContent = data.clickCount;
-            })
-            .catch(error => {
-                console.error('Sayacı güncelleme hatası:', error);
-            });
-        });
-
-        // İkonlu düğmeye tıklama olayını dinleyin
-        const iconButton = document.getElementById("iconButton");
-        iconButton.addEventListener("click", function() {
-            // Sayacı artırın
-            clickCount++;
-            // Sayacı yerel depolamaya kaydet
-            localStorage.setItem('clickCount', clickCount);
-            // Sayacı güncelle
-            document.getElementById("globalClickCount").textContent = clickCount;
-
-            // Sayacınızı sunucuya gönderin
-            fetch('/api/globalClickCount', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ clickCount })
-            })
-            .then(response => response.json())
-            .then(data => {
-                // Sayacı güncelle
-                               document.getElementById("globalClickCount").textContent = data.clickCount;
             })
             .catch(error => {
                 console.error('Sayacı güncelleme hatası:', error);
