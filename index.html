@@ -59,14 +59,6 @@
         });
 
         // Sayfa yüklendiğinde ve her depolama değişikliğinde sayacınızı güncelle
-        updateClickCount();
-        window.addEventListener('storage', function(event) {
-            if (event.key === 'clickCount') {
-                document.getElementById("clickCount").textContent = event.newValue;
-                updateClickCount();
-            }
-        });
-
         function updateClickCount() {
             fetch('/api/clickCount')
                 .then(response => response.json())
@@ -79,9 +71,15 @@
                 });
         }
 
-        // Sayfa yenilendiğinde sayacınızı yükle
         window.addEventListener('load', function() {
             updateClickCount();
+        });
+
+        window.addEventListener('storage', function(event) {
+            if (event.key === 'clickCount') {
+                document.getElementById("clickCount").textContent = event.newValue;
+                updateClickCount();
+            }
         });
     </script>
 </body>
