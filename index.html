@@ -35,11 +35,8 @@
     </div>
 
     <script>
-        // Sayacı tutmak için yerel depolamayı kontrol edin
-        let clickCount = localStorage.getItem('clickCount');
-        if (clickCount === null) {
-            clickCount = 0;
-        }
+        // Global değişken olarak sayacı tutun
+        let clickCount = 0;
 
         // Sayacı güncelle
         document.getElementById("clickCount").textContent = clickCount;
@@ -49,8 +46,6 @@
         button.addEventListener("click", function() {
             // Sayacı artırın
             clickCount++;
-            // Sayacı yerel depolamaya kaydet
-            localStorage.setItem('clickCount', clickCount);
             // Sayacı güncelle
             document.getElementById("clickCount").textContent = clickCount;
 
