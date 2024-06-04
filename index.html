@@ -30,8 +30,9 @@
 <body>
     <div class="container">
         <h1>Click&Click</h1>
-        <span class="counter" id="clickCount">0</span>
+        <span class="counter" id="globalClickCount">0</span>
         <button id="myButton" class="button">Click</button>
+        <button id="resetButton" class="button">Reset</button>
     </div>
 
     <script>
@@ -42,7 +43,7 @@
         }
 
         // Sayacı güncelle
-        document.getElementById("clickCount").textContent = clickCount;
+        document.getElementById("globalClickCount").textContent = clickCount;
 
         // Düğmeye tıklama olayını dinleyin
         const button = document.getElementById("myButton");
@@ -52,10 +53,10 @@
             // Sayacı yerel depolamaya kaydet
             localStorage.setItem('clickCount', clickCount);
             // Sayacı güncelle
-            document.getElementById("clickCount").textContent = clickCount;
+            document.getElementById("globalClickCount").textContent = clickCount;
 
             // Sayacınızı sunucuya gönderin
-            fetch('/api/clickCount', {
+            fetch('/api/globalClickCount', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -65,22 +66,33 @@
             .then(response => response.json())
             .then(data => {
                 // Sayacı güncelle
-                document.getElementById("clickCount").textContent = data.clickCount;
+                document.getElementById("globalClickCount").textContent = data.clickCount;
             })
             .catch(error => {
                 console.error('Sayacı güncelleme hatası:', error);
             });
         });
 
-        // Sayfa yüklendiğinde sayacınızı güncelle
-        updateClickCount();
+        // Sıfırla düğmesine tıklama olayını dinleyin
+        const resetButton = document.getElementById("resetButton");
+        resetButton.addEventListener("click", function() {
+            // Sayacı sıfırla
+            clickCount = 0;
+            // Sayacı yerel depolamadan kaldır
+            localStorage.removeItem('clickCount');
+            // Sayacı güncelle
+            document.getElementById("globalClickCount").textContent = clickCount;
+        });
 
-        function updateClickCount() {
-            fetch('/api/clickCount')
+        // Sayfa yüklendiğinde sayacınızı güncelle
+        updateGlobalClickCount();
+
+        function updateGlobalClickCount() {
+            fetch('/api/globalClickCount')
                 .then(response => response.json())
                 .then(data => {
                     // Sayacı güncelle
-                    document.getElementById("clickCount").textContent = data.clickCount;
+                    document.getElementById("globalClickCount").textContent = data.clickCount;
                 })
                 .catch(error => {
                     console.error('Sayacı güncelleme hatası:', error);
@@ -89,15 +101,4 @@
 
         // Sayfa yenilendiğinde sayacınızı yükle
         window.addEventListener('load', function() {
-            updateClickCount();
-        });
-
-        // Sayacınızı herkese aynı görünmesini sağlayın
-        window.addEventListener('storage', function(event) {
-            if (event.key === 'clickCount') {
-                document.getElementById("clickCount").textContent = event.newValue;
-            }
-        });
-    </script>
-</body>
-</html>
+            updateGlobalClick
