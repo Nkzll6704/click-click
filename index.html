@@ -32,7 +32,6 @@
         <h1>Click&Click</h1>
         <span class="counter" id="globalClickCount">0</span>
         <button id="myButton" class="button">Click</button>
-        <button id="resetButton" class="button">Reset</button>
     </div>
 
     <script>
@@ -73,17 +72,6 @@
             });
         });
 
-        // Sıfırla düğmesine tıklama olayını dinleyin
-        const resetButton = document.getElementById("resetButton");
-        resetButton.addEventListener("click", function() {
-            // Sayacı sıfırla
-            clickCount = 0;
-            // Sayacı yerel depolamadan kaldır
-            localStorage.removeItem('clickCount');
-            // Sayacı güncelle
-            document.getElementById("globalClickCount").textContent = clickCount;
-        });
-
         // Sayfa yüklendiğinde sayacınızı güncelle
         updateGlobalClickCount();
 
@@ -101,13 +89,8 @@
 
         // Sayfa yenilendiğinde sayacınızı yükle
         window.addEventListener('load', function() {
-            updateGlobalClick
-             window.addEventListener('load', function() {
             updateGlobalClickCount();
         });
-
-        // Sayacınızı global hale getirin
-        window.globalClickCount = clickCount;
     </script>
 </body>
 </html>
