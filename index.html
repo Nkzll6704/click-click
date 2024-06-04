@@ -102,3 +102,12 @@
         // Sayfa yenilendiğinde sayacınızı yükle
         window.addEventListener('load', function() {
             updateGlobalClick
+             window.addEventListener('load', function() {
+            updateGlobalClickCount();
+        });
+
+        // Sayacınızı global hale getirin
+        window.globalClickCount = clickCount;
+    </script>
+</body>
+</html>
