@@ -36,7 +36,7 @@
 
     <script>
         // Sayacı tutmak için bir değişken oluşturun
-        let clickCount = sessionStorage.getItem('clickCount') || 0;
+        let clickCount = localStorage.getItem('clickCount') || 0;
 
         // Düğmeye tıklama olayını dinleyin
         const button = document.getElementById("myButton");
@@ -45,8 +45,8 @@
             clickCount++;
             // Sayacı güncelleyin
             document.getElementById("clickCount").textContent = clickCount;
-            // Sayacı oturum depolama'ya kaydet
-            sessionStorage.setItem('clickCount', clickCount);
+            // Sayacı yerel depolama'ya kaydet
+            localStorage.setItem('clickCount', clickCount);
         });
 
         // Sayfa yüklendiğinde sayacıyı güncelle
@@ -60,5 +60,5 @@
             document.getElementById("clickCount").textContent = clickCount;
         });
     </script>
-    </body>
-    </html>
+</body>
+</html>
