@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Clicknclick | Clicker Counter</title>
+    <title>Clicknclick | Click Counter</title>
     <style>
         body {
             display: flex;
@@ -9,84 +9,79 @@
             justify-content: center;
             height: 100vh;
             margin: 0;
+            background-color: #f0f0f0;
+            font-family: Arial, sans-serif;
         }
         .container {
             text-align: center;
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
         }
         .counter {
-            font-size: 29px;
-            margin-right: 15px;
+            font-size: 50px;
+            margin-bottom: 20px;
         }
         .button {
-            padding: 20px 40px;
-            background-color: #000000;
+            padding: 15px 30px;
+            background-color: #007bff;
             color: #ffffff;
             border: none;
             border-radius: 10px;
             cursor: pointer;
+            font-size: 18px;
+        }
+        .button:hover {
+            background-color: #0056b3;
         }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>Click&Click</h1>
-        <span class="counter" id="clickCount">0</span>
+        <div class="counter" id="clickCount">0</div>
         <button id="myButton" class="button">Click</button>
     </div>
 
     <script>
-        // Sayacı yerel depolamadan veya sunucudan al ve güncelle
+        // Sayacı sunucudan al ve güncelle
         function updateClickCount() {
             fetch('/api/clickCount')
                 .then(response => response.json())
                 .then(data => {
                     // Sayacı güncelle
-                    localStorage.setItem('clickCount', data.clickCount);
-                    document.getElementById("clickCount").textContent = data.clickCount;
+                    document.getElementById('clickCount').textContent = data.clickCount;
                 })
                 .catch(error => {
                     console.error('Sayacı güncelleme hatası:', error);
                 });
         }
 
-        // Sayfa yüklendiğinde sayaç değerini sunucudan al
+        // Sayfa yüklendiğinde sayacı güncelle
         window.addEventListener('load', function() {
             updateClickCount();
         });
 
-        // Yerel depolama değiştiğinde sayaç değerini güncelle
-        window.addEventListener('storage', function(event) {
-            if (event.key === 'clickCount') {
-                document.getElementById("clickCount").textContent = event.newValue;
-            }
-        });
-
         // Düğmeye tıklama olayını dinleyin
-        const button = document.getElementById("myButton");
-        button.addEventListener("click", function() {
-            // Sunucuya istek yapmadan önce clickCount değerini artır ve logla
-            let clickCount = parseInt(localStorage.getItem('clickCount')) || 0;
-            clickCount++;
-            console.log('Local clickCount:', clickCount);
-
-            // Sayacınızı sunucuya gönderin ve güncel değeri alın
-            fetch('/api/clickCount', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ clickCount })
-            })
-            .then(response => response.json())
-            .then(data => {
-                // Sunucudan gelen değeri güncelle ve logla
-                console.log('Server response:', data);
-                localStorage.setItem('clickCount', data.clickCount);
-                document.getElementById("clickCount").textContent = data.clickCount;
-            })
-            .catch(error => {
-                console.error('Sayacı güncelleme hatası:', error);
-            });
+        const button = document.getElementById('myButton');
+        button.addEventListener('click', function() {
+            // Sunucuya tıklama olayını gönder
+            fetch('/api/incrementClickCount', { method: 'POST' })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Sunucu hatası');
+                    }
+                    // Sunucudan sayaç değerini güncelle
+                    return response.json();
+                })
+                .then(data => {
+                    // Sayacı güncelle
+                    document.getElementById('clickCount').textContent = data.clickCount;
+                })
+                .catch(error => {
+                    console.error('Sayacı güncelleme hatası:', error);
+                });
         });
     </script>
 </body>
