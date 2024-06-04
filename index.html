@@ -45,14 +45,14 @@
             globalClickCount++;
             // Sayacı yerel depolamaya kaydet
             localStorage.setItem('globalClickCount', globalClickCount);
-            // Sayacı tüm tarayıcı pencerelerinde güncelle
+            // Sayacı sunucuya gönder ve güncelle
             updateGlobalClickCount();
         });
 
         // Sayfa yüklendiğinde sayacıyı güncelle
         document.addEventListener("DOMContentLoaded", function() {
             document.getElementById("globalClickCount").textContent = globalClickCount;
-            // Sayacı tüm tarayıcı pencerelerinde güncelle
+            // Sayacı sunucuya gönder ve güncelle
             updateGlobalClickCount();
         });
 
@@ -60,11 +60,11 @@
         window.addEventListener("beforeunload", function() {
             globalClickCount = parseInt(localStorage.getItem('globalClickCount')) || 0;
             document.getElementById("globalClickCount").textContent = globalClickCount;
-            // Sayacı tüm tarayıcı pencerelerinde güncelle
+            // Sayacı sunucuya gönder ve güncelle
             updateGlobalClickCount();
         });
 
-        // Sayacı tüm tarayıcı pencerelerinde güncelle
+        // Sayacı sunucuya gönder ve güncelle
         function updateGlobalClickCount() {
             fetch('update_click_count.php', {
                 method: 'POST',
