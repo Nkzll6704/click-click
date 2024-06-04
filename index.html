@@ -30,34 +30,34 @@
 <body>
     <div class="container">
         <h1>Click&Click</h1>
-        <span class="counter" id="clickCount">0</span>
+        <span class="counter" id="globalClickCount">0</span>
         <button id="myButton" class="button">Click</button>
     </div>
 
     <script>
         // Sayacı tutmak için bir değişken oluşturun
-        let clickCount = localStorage.getItem('clickCount') || 0;
+        let globalClickCount = parseInt(localStorage.getItem('globalClickCount')) || 0;
 
         // Düğmeye tıklama olayını dinleyin
         const button = document.getElementById("myButton");
         button.addEventListener("click", function() {
             // Sayacı artırın
-            clickCount++;
+            globalClickCount++;
             // Sayacı güncelleyin
-            document.getElementById("clickCount").textContent = clickCount;
+            document.getElementById("globalClickCount").textContent = globalClickCount;
             // Sayacı yerel depolama'ya kaydet
-            localStorage.setItem('clickCount', clickCount);
+            localStorage.setItem('globalClickCount', globalClickCount);
         });
 
         // Sayfa yüklendiğinde sayacıyı güncelle
         document.addEventListener("DOMContentLoaded", function() {
-            document.getElementById("clickCount").textContent = clickCount;
+            document.getElementById("globalClickCount").textContent = globalClickCount;
         });
 
         // Sayfa kapatıldığında sayacı yerel depolamadan alın
         window.addEventListener("beforeunload", function() {
-            clickCount = localStorage.getItem('clickCount') || 0;
-            document.getElementById("clickCount").textContent = clickCount;
+            globalClickCount = parseInt(localStorage.getItem('globalClickCount')) || 0;
+            document.getElementById("globalClickCount").textContent = globalClickCount;
         });
     </script>
 </body>
