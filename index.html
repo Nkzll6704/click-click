@@ -30,60 +30,30 @@
 <body>
     <div class="container">
         <h1>Click&Click</h1>
-        <span class="counter" id="globalClickCount">0</span>
+        <span class="counter" id="clickCount">0</span>
         <button id="myButton" class="button">Click</button>
     </div>
 
     <script>
-        // Sayacı tutmak için bir değişken oluşturun
-        let globalClickCount = parseInt(localStorage.getItem('globalClickCount')) || 0;
+        // Sayacı tutmak için yerel depolamayı kontrol edin
+        let clickCount = localStorage.getItem('clickCount');
+        if (clickCount === null) {
+            clickCount = 0;
+        }
+
+        // Sayacı güncelle
+        document.getElementById("clickCount").textContent = clickCount;
 
         // Düğmeye tıklama olayını dinleyin
         const button = document.getElementById("myButton");
         button.addEventListener("click", function() {
             // Sayacı artırın
-            globalClickCount++;
+            clickCount++;
             // Sayacı yerel depolamaya kaydet
-            localStorage.setItem('globalClickCount', globalClickCount);
-            // Sayacı sunucuya gönder ve güncelle
-            updateGlobalClickCount();
+            localStorage.setItem('clickCount', clickCount);
+            // Sayacı güncelle
+            document.getElementById("clickCount").textContent = clickCount;
         });
-
-        // Sayfa yüklendiğinde sayacıyı güncelle
-        document.addEventListener("DOMContentLoaded", function() {
-            document.getElementById("globalClickCount").textContent = globalClickCount;
-            // Sayacı sunucuya gönder ve güncelle
-            updateGlobalClickCount();
-        });
-
-        // Sayfa kapatıldığında sayacı yerel depolamadan alın
-        window.addEventListener("beforeunload", function() {
-            globalClickCount = parseInt(localStorage.getItem('globalClickCount')) || 0;
-            document.getElementById("globalClickCount").textContent = globalClickCount;
-            // Sayacı sunucuya gönder ve güncelle
-            updateGlobalClickCount();
-        });
-
-        // Sayacı sunucuya gönder ve güncelle
-        function updateGlobalClickCount() {
-            fetch('update_click_count.php', {
-                method: 'POST',
-                body: JSON.stringify({ clickCount: globalClickCount }),
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            })
-            .then(response => response.json())
-            .then(data => {
-                // Sayacı güncelleme işlemi başarılı olduysa yerel depolamada güncelle
-                if (data.success) {
-                    localStorage.setItem('globalClickCount', globalClickCount);
-                }
-            })
-            .catch(error => {
-                console.error('Sayacı güncelleme hatası:', error);
-            });
-        }
     </script>
 </body>
 </html>
