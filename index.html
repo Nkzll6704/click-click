@@ -9,124 +9,94 @@
             justify-content: center;
             height: 100vh;
             margin: 0;
-            background-color: #f0f0f0;
-            font-family: Arial, sans-serif;
         }
         .container {
             text-align: center;
-            background: white;
-            padding: 30px;
-            border-radius: 15px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
         }
         .counter {
-            font-size: 50px;
-            margin-bottom: 20px;
+            font-size: 29px;
+            margin-right: 15px;
         }
         .button {
-            padding: 15px 30px;
-            background-color: #007bff;
+            padding: 20px 40px;
+            background-color: #000000;
             color: #ffffff;
             border: none;
             border-radius: 10px;
             cursor: pointer;
-            font-size: 18px;
-        }
-        .button:hover {
-            background-color: #0056b3;
         }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>Click&Click</h1>
-        <div class="counter" id="clickCount">0</div>
+        <span class="counter" id="clickCount">0</span>
         <button id="myButton" class="button">Click</button>
     </div>
 
     <script>
-        // Sayacı sunucudan al ve güncelle
+        // Sayacı tutmak için yerel depolamayı kontrol edin
+        let clickCount = localStorage.getItem('clickCount');
+        if (clickCount === null) {
+            clickCount = 0;
+        }
+
+        // Sayacı güncelle
+        document.getElementById("clickCount").textContent = clickCount;
+
+        // Düğmeye tıklama olayını dinleyin
+        const button = document.getElementById("myButton");
+        button.addEventListener("click", function() {
+            // Sayacı artırın
+            clickCount++;
+            // Sayacı yerel depolamaya kaydet
+            localStorage.setItem('clickCount', clickCount);
+            // Sayacı güncelle
+            document.getElementById("clickCount").textContent = clickCount;
+
+            // Sayacınızı sunucuya gönderin
+            fetch('/api/clickCount', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ clickCount })
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Sayacı güncelle
+                document.getElementById("clickCount").textContent = data.clickCount;
+            })
+            .catch(error => {
+                console.error('Sayacı güncelleme hatası:', error);
+            });
+        });
+
+        // Sayfa yüklendiğinde sayacınızı güncelle
+        updateClickCount();
+
         function updateClickCount() {
             fetch('/api/clickCount')
                 .then(response => response.json())
                 .then(data => {
                     // Sayacı güncelle
-                    document.getElementById('clickCount').textContent = data.clickCount;
+                    document.getElementById("clickCount").textContent = data.clickCount;
                 })
                 .catch(error => {
                     console.error('Sayacı güncelleme hatası:', error);
                 });
         }
 
-        // Sayfa yüklendiğinde sayacı güncelle
+        // Sayfa yenilendiğinde sayacınızı yükle
         window.addEventListener('load', function() {
             updateClickCount();
         });
 
-  // Düğmeye tıklama olayını dinleyin
-const button = document.getElementById('myButton');
-button.addEventListener('click', function() {
-    // Sunucuya tıklama olayını gönder
-    fetch('/api/incrementClickCount', { method: 'POST' })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Sunucu hatası: ' + response.statusText);
+        // Sayacınızı herkese aynı görünmesini sağlayın
+        window.addEventListener('storage', function(event) {
+            if (event.key === 'clickCount') {
+                document.getElementById("clickCount").textContent = event.newValue;
             }
-            // Sunucudan sayaç değerini güncelle
-            response.json().then(data => {
-                // Sunucudan gelen veriyi konsola yazdır
-                console.log('Sunucudan gelen veri:', data);
-                // Sayacı güncelle
-                document.getElementById('clickCount').textContent = data.clickCount;
-            });
-        })
-        .catch(error => {
-            // Hata durumlarında konsola yazdır
-            console.error('Hata:', error);
-        });
-});
-
-});
-
-            // Sunucudan sayaç değerini güncelle
-            return response.json();
-        })
-        .then(data => {
-            // Sunucudan gelen veriyi konsola yazdır
-            console.log('Sunucudan gelen veri:', data);
-            // Sayacı güncelle
-            document.getElementById('clickCount').textContent = data.clickCount;
-        })
-        .catch(error => {
-            // Hata durumlarında konsola yazdır
-            console.error('Hata:', error);
-        });
-});
-
-            // Sunucudan sayaç değerini güncelle
-            return response.json();
-        })
-        .then(data => {
-            // Sunucudan gelen veriyi konsola yazdır
-            console.log('Sunucudan gelen veri:', data);
-            // Sayacı güncelle
-            document.getElementById('clickCount').textContent = data.clickCount;
-        })
-        .catch(error => {
-            // Hata durumlarında konsola yazdır
-            console.error('Hata:', error);
-        });
-});
-                    // Sunucudan sayaç değerini güncelle
-                    return response.json();
-                })
-                .then(data => {
-                    // Sayacı güncelle
-                    document.getElementById('clickCount').textContent = data.clickCount;
-                })
-                .catch(error => {
-                    console.error('Sayacı güncelleme hatası:', error);
-                });
         });
     </script>
 </body>
