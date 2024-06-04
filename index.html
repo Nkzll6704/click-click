@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Clicknclick | Click Counter</title>
+    <title>Clicknclick | Clicker Counter</title>
     <style>
         body {
             display: flex;
@@ -64,17 +64,23 @@
         // Düğmeye tıklama olayını dinleyin
         const button = document.getElementById("myButton");
         button.addEventListener("click", function() {
+            // Sunucuya istek yapmadan önce clickCount değerini artır ve logla
+            let clickCount = parseInt(localStorage.getItem('clickCount')) || 0;
+            clickCount++;
+            console.log('Local clickCount:', clickCount);
+
             // Sayacınızı sunucuya gönderin ve güncel değeri alın
             fetch('/api/clickCount', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ increment: 1 })
+                body: JSON.stringify({ clickCount })
             })
             .then(response => response.json())
             .then(data => {
-                // Sunucudan gelen değeri güncelle
+                // Sunucudan gelen değeri güncelle ve logla
+                console.log('Server response:', data);
                 localStorage.setItem('clickCount', data.clickCount);
                 document.getElementById("clickCount").textContent = data.clickCount;
             })
